@@ -36,8 +36,9 @@ public class FileInOut {
 				// Run the game in WINE
 				command+="wine "+clientName+" ";
 			}else if(operatingSystem.indexOf("mac") >= 0){
-				JOptionPane.showMessageDialog(null, "Sorry! Currently this launcher does not work on Mac/OSX! :(", "Platform not supported", JOptionPane.WARNING_MESSAGE);
-				return "";
+				if(command=="")
+					command+="/usr/bin/open ";
+				command+="\""+clientName+"\" --args ";
 			}else {
 				if(command=="")
 					command+="./";
@@ -179,6 +180,16 @@ public class FileInOut {
 			}
 		}
 		
+		if(operatingSystem.indexOf("mac") >= 0){
+			try {
+				FileWriter write = new FileWriter(".command.sh");
+				write.write(command);
+				write.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
 		System.out.println("command generated!");
 		System.out.println("");
 		System.out.println(command);

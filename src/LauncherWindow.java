@@ -489,7 +489,7 @@ public class LauncherWindow {
 				fileChooser.setCurrentDirectory(new File(Paths.get(".").toAbsolutePath().normalize().toString()));
 				int rVal = fileChooser.showOpenDialog(null);
 				if(rVal == JFileChooser.APPROVE_OPTION) {
-					txtClientPath.setText(fileChooser.getSelectedFile().getName());
+					txtClientPath.setText(fileChooser.getSelectedFile().getAbsolutePath());
 				}
 			}
 		});
@@ -575,7 +575,7 @@ public class LauncherWindow {
 				}
 			}
 		});
-		btnMoveUp.setIcon(new ImageIcon(LauncherWindow.class.getResource("/javax/swing/plaf/metal/icons/sortUp.png")));
+		//btnMoveUp.setIcon(new ImageIcon(LauncherWindow.getClass().getResource("/javax/swing/plaf/metal/icons/sortUp.png")));
 		btnMoveUp.setBounds(10, 280, 24, 23);
 		tabFiles.add(btnMoveUp);
 		
@@ -592,7 +592,7 @@ public class LauncherWindow {
 				}
 			}
 		});
-		btnMoveDown.setIcon(new ImageIcon(LauncherWindow.class.getResource("/javax/swing/plaf/metal/icons/sortDown.png")));
+		//btnMoveDown.setIcon(new ImageIcon(LauncherWindow.class.getResource("/javax/swing/plaf/metal/icons/sortDown.png")));
 		btnMoveDown.setBounds(10, 306, 24, 23);
 		tabFiles.add(btnMoveDown);
 		
@@ -783,7 +783,7 @@ public class LauncherWindow {
 				if(chckbxShowPassword.isSelected()) {
 					txtServerPassword.setEchoChar((char)0);
 				}else {
-					txtServerPassword.setEchoChar('œ');
+					txtServerPassword.setEchoChar('L');
 				}
 			}
 		});
@@ -1373,9 +1373,14 @@ public class LauncherWindow {
 				});
 				gameThread.start();
 				try { 
-					 
 					//command="xfce4-terminal -e \""+command+"\"";
-					if((chckbxSeparateConsoleWindow.isSelected() || (tbpNetwork.getSelectedIndex()==1 && chckbxDedicated.isSelected())) && OS.contains("nux")) {
+					if(System.getProperty("os.name").toLowerCase().indexOf("mac") >= 0){
+						File f = new File(".command.sh");
+						Runtime.getRuntime().exec("chmod +x .command.sh");
+						Runtime.getRuntime().exec("./.command.sh").waitFor();
+						f.delete();
+					}
+					else if((chckbxSeparateConsoleWindow.isSelected() || (tbpNetwork.getSelectedIndex()==1 && chckbxDedicated.isSelected())) && OS.contains("nux")) {
 						System.out.println("open terminal");
 						String terminalToUse = new DetectLocalTerminal().detectTerminal();
 						String[] comList = {terminalToUse,"-e",command};
@@ -1385,7 +1390,7 @@ public class LauncherWindow {
 						//new ProcessBuilder(command.split(" ")).start();
 					
 					//Runtime.getRuntime().exec("xfce4-terminal -e '/home/hitcoder/Documents/SRB2/2.1/lsdl2srb2 +skin Tails +color 24 -opengl'");
-				} catch (IOException e) {
+				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
